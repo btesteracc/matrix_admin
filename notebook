@@ -24,7 +24,7 @@
   {
    "source": [
     "from matrix_server import Matrix_server\n",
-    "server = Matrix_server(\"https://bcw.learningcoolstuff.de\")\n",
+    "server = Matrix_server(\"https://matrix.org\")\n",
     "server.load_config()"
    ],
    "cell_type": "code",
