@@ -37,7 +37,7 @@ class Matrix_server():
                 self.auth_user = r.json()
                 self.set_access_token(self.auth_user['access_token'])
                 if saveconfig:
-                    saveconfig(filename)
+                    self.save_config(filename)
                 return r.status_code
         except:
             return None
