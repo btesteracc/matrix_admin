@@ -27,7 +27,7 @@ class Matrix_server():
             json.dump(self.auth_user,fp=file)
             
 
-    def login(self,username,password):
+    def login(self,username,password, saveconfig=False,filename = ""):
         self.username=username
         adress= self.servername+"/_matrix/client/r0/login"
         data = json.dumps({"user" : username, "password" : password, "type":"m.login.password"})
@@ -36,6 +36,8 @@ class Matrix_server():
             if r.status_code==200:
                 self.auth_user = r.json()
                 self.set_access_token(self.auth_user['access_token'])
+                if saveconfig:
+                    saveconfig(filename)
                 return r.status_code
         except:
             return None
