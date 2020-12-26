@@ -28,8 +28,9 @@ class Matrix_server():
             json.dump(self.auth_user,fp=file)
             
 
-    def login(self,username,password, saveconfig=False,filename = ""):
+    def login(self,server_url,username,password, saveconfig=False,filename = ""):
         self.username=username
+        self.server_url=server_url
         adress= self.server_url+"/_matrix/client/r0/login"
         data = json.dumps({"user" : username, "password" : password, "type":"m.login.password"})
         try: 
@@ -38,7 +39,6 @@ class Matrix_server():
                 self.auth_user = r.json()
                 self.set_access_token(self.auth_user['access_token'])
                 self.server_name=self.auth_user['home_server']
-                self.server_url='https://'+self.server_name
                 if saveconfig:
                     self.save_config(filename)
                 return r.status_code
