@@ -37,6 +37,8 @@ class Matrix_server():
             if r.status_code==200:
                 self.auth_user = r.json()
                 self.set_access_token(self.auth_user['access_token'])
+                self.server_name=self.auth_user['home_server']
+                self.server_url='https://'+self.server_name
                 if saveconfig:
                     self.save_config(filename)
                 return r.status_code
