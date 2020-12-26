@@ -3,7 +3,7 @@ import urllib.parse
 import json
 
 class Matrix_server():
-    def __init__(self,servername):
+    def __init__(self,servername =""):
         self.servername = servername
         self.header=""
 
