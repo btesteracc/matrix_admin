@@ -7,11 +7,12 @@ class Matrix_server():
         self.server_name = server_name
         self.header=""
 
-    def load_config(self,filename = ""):
-        if filename == "":
+    def load_config(self,file, filename = ""):
+        if filename == "" and file==None:
             filename=self.server_name+'.json'
         try:
-            file = open(filename)
+            if file==None:
+                file = open(filename)
             self.auth_user = json.load(file)
             self.set_access_token(self.auth_user['access_token'])
             self.server_name=self.auth_user['home_server']
@@ -36,12 +37,13 @@ class Matrix_server():
         try: 
             r = requests.post(adress, data)
             if r.status_code==200:
+                print(r.json)
                 self.auth_user = r.json()
                 self.set_access_token(self.auth_user['access_token'])
                 self.server_name=self.auth_user['home_server']
                 if saveconfig:
                     self.save_config(filename)
-                return r.status_code
+            return r.status_code
         except:
             return None
 
@@ -75,7 +77,10 @@ class Matrix_server():
 
     def get_users(self):
         url=self.server_url+"/_synapse/admin/v2/users"
+        print(url)
+        print(self.header)
         res = requests.get(url,headers=self.header)
+        print(res.status_code)
         if res.status_code==200:
             return res.json()['users']
         else:
@@ -93,7 +98,7 @@ class Matrix_server():
         url=self.server_url+f"/_synapse/admin/v2/users/{urllib.parse.quote(user_data['user_id'])}"
         data = json.dumps({"password" : user_data['password'], "displayname" : user_data['displayname']})
         res = requests.put(url, data = data, headers=self.header)
-        if res.status_code==200:
+        if res.status_code==201: # 201 means created on PUT!
             return res.json()
         return None
     
