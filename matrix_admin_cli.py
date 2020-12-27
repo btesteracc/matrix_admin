@@ -27,7 +27,7 @@ parser.add_argument('-du','--delete_user',help='delete user with given userid (@
 parser.add_argument('-dr','--delete_room',help='delete rom with given roomid')
 parser.add_argument('-cp','--change_password',help='change password for given userid')
 
-parser.add_argument('-lu','--list_users',help='list users from server')
+parser.add_argument('-lu','--list_users',help='list users from server',action="store_true")
 parser.add_argument('-lr','--list_rooms',help='list rooms from server',action="store_true")
 parser.add_argument('-q','--quiet', help='No comments, just JSON Output',action="store_true")
 args = parser.parse_args()
