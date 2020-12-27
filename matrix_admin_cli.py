@@ -54,7 +54,7 @@ if args.login:
     while ( saveconfig:=input("Do you want to save the configuration? (Enter y/n)").lower() ) not in {"y", "n"}: pass
     if saveconfig=='y':
         filename=input("Configuration Filename (optional): ")
-    print(server_name, password, username,saveconfig,filename)
+    
     if server.login(server_name,username,password,saveconfig=='y',filename)==None:
         print("Error on login. Exiting:")
         sys.exit(1)
