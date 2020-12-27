@@ -79,8 +79,8 @@ elif args.change_password:
 
 elif args.delete_user:
     data=server.deactivate_user(args.delete_user)
-    print('User deactivated')
-    print(data)
+    if data['id_server_unbind_result']=='success':
+        print(f'User {args.delete_user} deactivated')
 
 elif args.add_user:
     username=input("Username: ")
@@ -98,11 +98,11 @@ elif args.add_user:
     user_data={'user_id':user_id,'password': pw,'displayname':username}
     data=server.new_user(user_data)
     if data:
-        print('User created')
+        print(f'User created')
+        if not args.quiet:
+            print(json.dumps(data, indent=True,sort_keys=True))
     else:
         print('User creation failed')
-    if not args.quiet:
-        print(json.dumps(data, indent=True,sort_keys=True))
 
 
 
