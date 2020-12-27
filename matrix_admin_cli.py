@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 from matrix_server import Matrix_server
 import json
@@ -6,28 +7,51 @@ import getpass
 
 parser = argparse.ArgumentParser(prog="matrix_admin_cli.py", description="A simple Matrix-Server admin tool")
 
-# parse.add_argument('--server',help='name of the server')
-# parse.add_argument('--admin',help='username of the server admin')
-# parse.add_argument('--password',help='password for the admin user - DO USE WITH CAUTION!')
+parser.add_argument('-l','--login',help="Login manually",action="store_true")
+
+# sub_parser=parser.add_subparsers(help='Sub command login_config')
+# login_parser = sub_parser.add_parser("--login_config", help="Login config on commandline")
+# login_parser.add_argument('-H','--host',help='hostname')
+# login_parser.add_argument('-u','--user',help='username of the server admin')
+# login_parser.add_argument('-p','--password',help='password for the admin user - DO USE WITH CAUTION!')
+
+#parser.add_argument('cmd',choices=['lu','lr', 'cp', 'au'])
+
 parser.add_argument('-au','--add_user',help='create new user - asks for username and password',action="store_true")
-parser.add_argument('-du','--delete_user',help='delete user with given userid')
+parser.add_argument('-du','--delete_user',help='delete user with given userid (@user:servername)')
 parser.add_argument('-dr','--delete_room',help='delete rom with given roomid')
 parser.add_argument('-cp','--change_password',help='change password for given userid')
-parser.add_argument('-c','--config_file',help='load config from file')
-parser.add_argument('-lu','--list_users',help='list users from server', action="store_true")
+parser.add_argument('-c','--config_file',help='load config from file',type=argparse.FileType('r'))
+parser.add_argument('-lu','--list_users',help='list users from server')
 parser.add_argument('-lr','--list_rooms',help='list rooms from server',action="store_true")
+parser.add_argument('-q','--quiet', help='No comments, just JSON Output',action="store_true")
 args = parser.parse_args()
 if len(sys.argv)==1:
     parser.print_help(sys.stderr)
     sys.exit(1)
 server = Matrix_server()
-if args.config_file:
-    print('Loading config....')
-    server.load_config(args.config_file)
-    print('Config loaded from {}'.format(args.config_file))
+
+if args.login:
+    server_name=input('Servername: ')
+    username=input('Username: ')
+    password=getpass.getpass('Password: ')
+    filename=""
+    while ( saveconfig:=input("Do you want to save the configuration? (Enter y/n)").lower() ) not in {"y", "n"}: pass
+    if saveconfig=='y':
+        filename=input("Configuration Filename (optional): ")
+    if server.login(server_name,username,password,saveconfig,filename)==None:
+        print("Error on login. Exiting:")
+        sys.exit(1)
+
+elif args.config_file:
+    data= server.load_config(file=args.config_file) 
+    if data and not args.quiet:
+        print('Config loaded from {}'.format(args.config_file.name))
 else:
     print('No configuration given. Exiting')
-    exit()
+    sys.exit(1)
+
+
 if args.list_users:
     print(json.dumps(server.get_users(), indent=True, sort_keys=True))
 
@@ -45,13 +69,13 @@ elif args.change_password:
             break
     else:
         print('Passwords do not match, exiting')
-        exit()
+        sys.exit(1)
 
     data = server.reset_password(args.change_password, pw)
     print('Password changed')
     print(data)
     print("\n")
-    exit()
+
 
 elif args.delete_user:
     data=server.deactivate_user(args.delete_user)
@@ -77,7 +101,8 @@ elif args.add_user:
         print('User created')
     else:
         print('User creation failed')
-    print(json.dump(data, indent=True,sort_keys=True))
+    if not args.quiet:
+        print(json.dumps(data, indent=True,sort_keys=True))
 
 
 
