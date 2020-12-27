@@ -13,15 +13,13 @@ login_group.add_argument('-l','--login',help="Login manually",action="store_true
 login_group.add_argument('-c','--config_file',help='load config from file',type=argparse.FileType('r'))
 
 parser.add_argument('-H','--host',help='hostname')
-parser.add_argument('-u','--user',help='username of the server admin')
+parser.add_argument('-u','--user',help='matrix id of the server admin')
 parser.add_argument('-p','--password',help='password for the admin user - DO USE WITH CAUTION!')
 
-#parser.add_argument('cmd',choices=['lu','lr', 'cp', 'au'])
-
 parser.add_argument('-au','--add_user',help='create new user - asks for username and password',action="store_true")
-parser.add_argument('-du','--delete_user',help='delete user with given userid (@user:servername)')
+parser.add_argument('-du','--delete_user',help='delete user with given matrix id (@user:servername)')
 parser.add_argument('-dr','--delete_room',help='delete rom with given roomid')
-parser.add_argument('-cp','--change_password',help='change password for given userid')
+parser.add_argument('-cp','--change_password',help='change password for given matrix id')
 
 parser.add_argument('-lu','--list_users',help='list users from server',action="store_true")
 parser.add_argument('-lr','--list_rooms',help='list rooms from server',action="store_true")
