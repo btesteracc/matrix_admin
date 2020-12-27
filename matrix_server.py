@@ -31,13 +31,15 @@ class Matrix_server():
 
     def login(self,server_url,username,password, saveconfig=False,filename = ""):
         self.username=username
-        self.server_url=server_url
+        if "https://" not in server_url:
+            self.server_url="https://"+server_url
+        else:
+            self.server_url=server_url
         adress= self.server_url+"/_matrix/client/r0/login"
         data = json.dumps({"user" : username, "password" : password, "type":"m.login.password"})
         try: 
             r = requests.post(adress, data)
             if r.status_code==200:
-                print(r.json)
                 self.auth_user = r.json()
                 self.set_access_token(self.auth_user['access_token'])
                 self.server_name=self.auth_user['home_server']
@@ -45,7 +47,7 @@ class Matrix_server():
                     self.save_config(filename)
             return r.status_code
         except:
-            return None
+            return "Error connecting to server"
 
     def set_access_token(self, access_token):
         self.access_token = access_token
