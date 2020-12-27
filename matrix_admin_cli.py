@@ -4,6 +4,7 @@ from matrix_server import Matrix_server
 import json
 import os,sys
 import getpass
+import re
 
 parser = argparse.ArgumentParser(prog="matrix_admin_cli.py", description="A simple Matrix-Server admin tool")
 
@@ -78,9 +79,16 @@ elif args.change_password:
 
 
 elif args.delete_user:
-    data=server.deactivate_user(args.delete_user)
-    if data['id_server_unbind_result']=='success':
-        print(f'User {args.delete_user} deactivated')
+    is_argument_a_matrix_id = re.match('@([a-zA-Z0-9_\-\.]+):(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$',args.delete_user)
+    if is_argument_a_matrix_id !=None:
+        data=server.deactivate_user(args.delete_user)
+        if data['id_server_unbind_result']=='success':
+            print(f'User {args.delete_user} deactivated')
+        else:
+            print('Error deactivating user')
+    else:
+        print('Not a valid matrix-id')
+        sys.exit(1)
 
 elif args.add_user:
     username=input("Username: ")
