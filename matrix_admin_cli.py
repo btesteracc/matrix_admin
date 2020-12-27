@@ -60,7 +60,7 @@ if args.login:
 elif args.config_file:
     data= server.load_config(file=args.config_file) 
     if data and not args.quiet:
-        print('Config loaded from {}'.format(args.config_file.name))
+        print('Configuration loaded from {}'.format(args.config_file.name))
 else:
     print('No configuration given. Exiting')
     sys.exit(1)
