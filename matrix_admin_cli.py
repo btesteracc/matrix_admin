@@ -11,14 +11,10 @@ parser = argparse.ArgumentParser(prog="matrix_admin_cli.py", description="A simp
 login_group = parser.add_mutually_exclusive_group()
 login_group.add_argument('-l','--login',help="Login manually",action="store_true")
 login_group.add_argument('-c','--config_file',help='load config from file',type=argparse.FileType('r'))
-login_group.add_argument('-ld','--login_data',help="Login with given data",action="store_true")
 
-
-#login_parser argparse.ArgumentParser()
-# login_parser = sub_parser.add_parser("--login_config", help="Login config on commandline")
-# login_parser.add_argument('-H','--host',help='hostname')
-# login_parser.add_argument('-u','--user',help='username of the server admin')
-# login_parser.add_argument('-p','--password',help='password for the admin user - DO USE WITH CAUTION!')
+parser.add_argument('-H','--host',help='hostname')
+parser.add_argument('-u','--user',help='username of the server admin')
+parser.add_argument('-p','--password',help='password for the admin user - DO USE WITH CAUTION!')
 
 #parser.add_argument('cmd',choices=['lu','lr', 'cp', 'au'])
 
@@ -37,14 +33,29 @@ if len(sys.argv)==1:
 server = Matrix_server()
 
 if args.login:
-    server_name=input('Servername: ')
-    username=input('Username: ')
-    password=getpass.getpass('Password: ')
+    if args.host:
+        print(f'Servername: {args.host}')
+        server_name=args.host
+    else:
+        server_name = input('Servername: ')
+    
+    if args.user:
+        username=args.user
+        print(f'Username: {args.user}')
+    else:
+        username = input('Username: ')
+    
+    if args.password:
+        password=args.password
+    else:
+        password=getpass.getpass('Password: ')
+    
     filename=""
     while ( saveconfig:=input("Do you want to save the configuration? (Enter y/n)").lower() ) not in {"y", "n"}: pass
     if saveconfig=='y':
         filename=input("Configuration Filename (optional): ")
-    if server.login(server_name,username,password,saveconfig,filename)==None:
+    print(server_name, password, username,saveconfig,filename)
+    if server.login(server_name,username,password,saveconfig=='y',filename)==None:
         print("Error on login. Exiting:")
         sys.exit(1)
 
