@@ -36,29 +36,29 @@ if args.login:
         server_name=args.host
     else:
         server_name = input('Servername: ')
-    
+
     if args.user:
         username=args.user
         print(f'Username: {args.user}')
     else:
         username = input('Username: ')
-    
+
     if args.password:
         password=args.password
     else:
         password=getpass.getpass('Password: ')
-    
+
     filename=""
     while ( saveconfig:=input("Do you want to save the configuration? (Enter y/n)").lower() ) not in {"y", "n"}: pass
     if saveconfig=='y':
         filename=input("Configuration Filename (optional): ")
-    
+
     if server.login(server_name,username,password,saveconfig=='y',filename)==None:
         print("Error on login. Exiting:")
         sys.exit(1)
 
 elif args.config_file:
-    data= server.load_config(file=args.config_file) 
+    data= server.load_config(file=args.config_file)
     if data and not args.quiet:
         print('Configuration loaded from {}'.format(args.config_file.name))
 else:
@@ -124,10 +124,3 @@ elif args.add_user:
             print(json.dumps(data, indent=True,sort_keys=True))
     else:
         print('User creation failed')
-
-
-
-    
-
-
-
